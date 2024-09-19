@@ -1,0 +1,52 @@
+﻿@model ConvertModel
+
+<div id="inputCard" class="col-xl-6 col-lg-10 col-md-12 col-sm-12 card bg-black">
+    <h3 class="card-header text-center">Number to Words Converter</h3>
+    <div class="card-body">
+        <form id="numberForm" onsubmit="GetConversion()">
+            <label for="numberInput">Enter a dollar amount:</label>
+            <input type="number" id="numberInput" class="form-control" step="0.01" required>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-warning btn-t mt-3"><strong>Convert</strong></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="outputCard" class="col-xl-6 col-lg-10 col-md-12 col-sm-12 card bg-black" style="display:none;">
+    <div class="card-body">
+        <p id="output"></p>
+    </div>
+</div>
+
+<script>
+
+    function GetConversion() {
+
+        event.preventDefault();
+        
+        document.getElementById('outputCard').style.display = 'none';
+
+        const numberInput = document.getElementById('numberInput').value;
+
+        const data = { InputNumber: numberInput };
+        const queryString = new URLSearchParams(data).toString();
+
+        fetch(`/Convert/TryConvert?${queryString}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('outputCard').style.display = 'block';
+            document.getElementById('output').innerText = data;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+</script>
